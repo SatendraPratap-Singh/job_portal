@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Daily Job Planning</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    font-family: Arial;
+    background:#f2f3f5;
+    margin:0;
+    padding:15px;
+}
+
+.container {
+    max-width:500px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+    text-align:center;
+    margin-bottom:20px;
+}
+
+label {
+    font-size:14px;
+    margin-top:10px;
+}
+
+input, select, textarea {
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    border:1px solid #ccc;
+    border-radius:6px;
+}
+
+textarea {
+    height:80px;
+}
+
+.btn-row {
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+button {
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    font-size:15px;
+    cursor:pointer;
+}
+
+.submit {
+    background:#2c3e50;
+    color:white;
+}
+
+.download {
+    background:#3498db;
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>Daily Job Planning</h2>
+
+<form>
+
+<label>Date</label>
+<input type="date" id="date">
+
+<label>Line</label>
+<select id="line">
+<option>Select Line</option>
+<option>Clinkerization</option>
+<option>Cement Unit</option>
+<option>Power Plant</option>
+</select>
+
+<label>Department</label>
+<select id="department">
+<option>Select Department</option>
+<option>Mechanical</option>
+<option>Process</option>
+<option>Electrical</option>
+<option>Instrument</option>
+<option>Civil</option>
+<option>Automobile</option>
+<option>Mines</option>
+<option>HR & Admin</option>
+<option>IT</option>
+<option>O&M</option>
+</select>
+
+<label>Location</label>
+<input type="text" id="location" placeholder="Specific site/zone">
+
+<label>Activity - Brief Description</label>
+<textarea id="activity"></textarea>
+
+<label>Job Category</label>
+<select id="category">
+<option>Select Category</option>
+<option>Routine</option>
+<option>Non-Routine</option>
+</select>
+
+<label>Priority</label>
+<select id="priority">
+<option>Select Priority</option>
+<option>High</option>
+<option>Medium</option>
+<option>Low</option>
+</select>
+
+<label>Job Done by (Team/Person)</label>
+<input type="text" id="person">
+
+<label>Critical Activity Involved</label>
+<select id="critical">
+<option>Select Activity Type</option>
+<option>Working at height</option>
+<option>Confined space entry</option>
+<option>Electrical Safety</option>
+<option>LOTOTO</option>
+<option>Hot Work</option>
+<option>Material lowering and lifting</option>
+<option>Scaffolding work</option>
+<option>Conveyor Maintenance</option>
+</select>
+
+<label>1st Person Responsible</label>
+<input type="text" id="supervisor">
+
+<label>Contact Number</label>
+<input type="number" id="contact">
+
+<label>Permit Status</label>
+<select id="permit">
+<option>Select Status</option>
+<option>Taken</option>
+<option>Not Taken</option>
+<option>Not Required</option>
+</select>
+
+<label>HIRA / SOP</label>
+<select id="hira">
+<option>Select Availability</option>
+<option>Available</option>
+<option>Not Available</option>
+</select>
+
+<label>Activity Status</label>
+<select id="status">
+<option>Planned</option>
+<option>Under Progress</option>
+<option>Completed</option>
+</select>
+
+<div class="btn-row">
+<button type="button" class="submit" onclick="saveData()">Submit Data</button>
+<button type="button" class="download" onclick="downloadExcel()">Download</button>
+</div>
+
+</form>
+</div>
+
+<script>
+
+const API = "https://jobportal-production-b3c0.up.railway.app/api/jobplans";
+
+//////////////////////////////////////////////////
+// SAVE DATA
+//////////////////////////////////////////////////
+function saveData() {
+
+let data = {
+date: document.getElementById("date").value,
+line: document.getElementById("line").value,
+department: document.getElementById("department").value,
+location: document.getElementById("location").value,
+activity: document.getElementById("activity").value,
+category: document.getElementById("category").value,
+priority: document.getElementById("priority").value,
+person: document.getElementById("person").value,
+critical: document.getElementById("critical").value,
+supervisor: document.getElementById("supervisor").value,
+contact: document.getElementById("contact").value,
+permit: document.getElementById("permit").value,
+hira: document.getElementById("hira").value,
+status: document.getElementById("status").value
+};
+
+fetch(API, {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify(data)
+})
+.then(() => alert("Data Saved ✅"))
+.catch(() => alert("Error ❌"));
+}
+
+//////////////////////////////////////////////////
+// EXCEL DOWNLOAD
+//////////////////////////////////////////////////
+function downloadExcel(){
+
+fetch(API)
+.then(res => res.json())
+.then(data => {
+
+if(data.length === 0){
+alert("No data ❌");
+return;
+}
+
+let csv="";
+let headers = Object.keys(data[0]);
+csv+=headers.join(",")+"\n";
+
+data.forEach(r=>{
+let row=headers.map(h=>`"${r[h]||""}"`);
+csv+=row.join(",")+"\n";
+});
+
+let blob=new Blob([csv],{type:"text/csv"});
+let a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="Job_Report.csv";
+a.click();
+
+});
+}
+
+</script>
+
+</body>
+</html>
