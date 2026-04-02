@@ -1,4 +1,4 @@
-package satyendra_job.portal.demo.controller;
+package satyendra_job.portal.demo;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
