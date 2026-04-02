@@ -8,17 +8,9 @@ import java.util.*;
 @RequestMapping("/api/jobplans")
 public class UserController {
 
-    private List<String> jobList = new ArrayList<>();
-
     @GetMapping
     public List<String> getAll() {
-        return jobList;
-    }
-
-    @PostMapping
-    public String add(@RequestBody String data) {
-        jobList.add(data);
-        return "Saved";
+        return new ArrayList<>();
     }
 
     @GetMapping("/download")
