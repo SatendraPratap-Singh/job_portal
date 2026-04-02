@@ -1,4 +1,4 @@
-package satyendra_job.portal.demo.controller.config;
+package satyendra_job.portal.demo.config;
 
 
 
